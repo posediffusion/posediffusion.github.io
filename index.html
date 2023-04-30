@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="We propose to formulate the Structure from Motion (SfM) problem inside a probabilistic diffusion framework, modelling the conditional distribution of camera poses given input images.">
+  <meta name="keywords" content="PoseDiffusion, Camera Pose Estimation, 3D reconstruction">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PoseDiffusion: Solving Pose Estimation via Diffusion-aided Bundle Adjustment</title>
+
+
+  <!-- <meta property="og:image" content="https://3dmagicpony.github.io/resources/overview.jpg"/> -->
+	<meta property="og:title" content="PoseDiffusion: Solving Pose Estimation via Diffusion-aided Bundle Adjustment." />
+	<meta property="og:description" content="We propose to formulate the Structure from Motion (SfM) problem inside a probabilistic diffusion framework, modelling the conditional distribution of camera poses given input images." />
+  <!-- Twitter automatically scrapes this. Go to https://cards-dev.twitter.com/validator?
+      if you update and want to force Twitter to re-scrape. -->
+  <meta property="twitter:card"          content="summary" />
+  <meta property="twitter:title"         content="PoseDiffusion: Solving Pose Estimation via Diffusion-aided Bundle Adjustment." />
+  <meta property="twitter:description"   content="We propose to formulate the Structure from Motion (SfM) problem inside a probabilistic diffusion framework, modelling the conditional distribution of camera poses given input images." />
+  <!-- <meta property="twitter:image"         content="https://3dmagicpony.github.io/resources/overview.jpg" /> -->
+
+  <!-- MathJax library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TSQGH8Q0WV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-TSQGH8Q0WV');
+  </script>
+  
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <!-- <link rel="icon" href=""> -->
+
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <!-- <script src="./static/js/index.js"></script> -->
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <!-- <div class="columns is-centered">
+        <video id="banner" autoplay muted loop playsinline height="100%">
+          <source src="resources/carousel.mp4"
+                  type="video/mp4">
+        </video>
+      </div> -->
+      <br>
+
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-3 publication-title" style="font-size: 2.2rem;">PoseDiffusion: Solving Pose Estimation via Diffusion-aided Bundle Adjustment</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://jytime.github.io/">Jianyuan Wang</a><sup>1, 2</sup>,
+            </span>
+            &nbsp;&nbsp;&nbsp;
+            <span class="author-block">
+              <a href="https://chrirupp.github.io/">Christian Rupprecht</a><sup>1</sup>,
+            </span>
+            &nbsp;&nbsp;&nbsp;
+            <span class="author-block">
+              <a href="https://d-novotny.github.io/">David Novotny</a><sup>2</sup>
+            </span>
+          </div>
+
+
+          <div class="is-size-5 publication-authors">
+            <!-- <span class="author-block"><sup>1</sup>Visual Geometry Group, University of Oxford,</span> -->
+            <span class="author-block" style="margin-right: 10px;"><sup>1</sup>Visual Geometry Group, University of Oxford,</span>
+            <span class="author-block"><sup>2</sup>Meta AI</span>
+          </div>
+
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+              <!-- <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                </a>
+              </span> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img id="teaser" src="resources/overview.png" alt="Teaser image" style="width: 100%;">
+      <h2 class="subtitle">
+        We propose to formulate the Structure from Motion (SfM) problem inside a probabilistic diffusion framework. Training is supervised given a multi-view datasets of images and camera poses to learn a diffusion model \(D_\theta\) to model \(p(x |I)\). During inference, the reverse diffusion process is guided by optimizing the geometric consistency between poses via Sampson Epipolar Error.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Camera pose estimation is a long-standing computer vision problem that to date often relies on classical methods, such as handcrafted keypoint matching, RANSAC and bundle adjustment. 
+            In this paper, we propose to formulate the Structure from Motion (SfM) problem inside a probabilistic diffusion framework, modelling the conditional distribution of camera poses given input images.
+            This novel view of an old problem has several advantages. 
+            (i) The nature of the diffusion framework mirrors the iterative procedure of bundle adjustment.
+            (ii) The formulation allows a seamless integration of geometric constraints from epipolar geometry.
+            (iii) It excels in typically difficult scenarios such as sparse views with wide baselines.
+            (iv) The method can predict intrinsics and extrinsics for an arbitrary amount of images.
+            We demonstrate that our method significantly improves over the classic SfM pipelines and the learned approaches on two real-world datasets. 
+            Finally, it is observed that our method can generalize across datasets without further training.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+      <div class="column is-full-width has-text-centered">
+        <!-- <h2 class="title is-3">Camera Pose Estimation</h2> -->
+
+        <h2 class="title is-5">Visualization of Sampling Iterations</h2>
+        <div class="content has-text-justified">
+          <p>
+            <!-- After training, given a set of input frames, the model samples \(p(x |I)\) step by step. We start to use geometry-guided sampling at the timestep of 10, where a jump of prediction quality can be found in the video at t=10. -->
+          After training, given a set of input frames, the model samples \(p(x |I)\) step by step. We employ geometry-guided sampling starting at timestep 10, which corresponds to a notable improvement in prediction quality observed in the video at \(t=10\).
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <video id="splash-sample1" autoplay controls muted preload loop playsinline>
+            <source src="resources/splash_sample1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="content has-text-centered">
+          <video id="splash-sample2" autoplay controls muted preload loop playsinline>
+            <source src="resources/splash_sample2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <br>
+
+        <h2 class="title is-5">Qualitative Comparison</h2>
+        <div class="content has-text-justified">
+          <p>
+            We provide the qualitative samples of pose estimation on the CO3Dv2 dataset. 
+            Given input images I (first row), our <span style="color: rgb(217, 95, 1);">PoseDiffusion</span> (2nd row) 
+            is compared to <span style="color: rgb(102, 102, 102);">RelPose</span> (3rd row), 
+            <span style="color: rgb(117, 112, 179);">COLMAP+SPSG</span> (4th row), and the 
+            <span style="color: red;">ground truth</span>. 
+            Missing cameras indicate failure.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <img id="qualimg" src="resources/qual_co3d.png" alt="Qualitative Samples on Co3D" style="width: 100%;">
+        </div>        
+
+        <div class="content has-text-justified">
+          <p>
+            We also provide a video featuring the observation with a sweeping, fly-around viewpoint.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <video id="qual-video" autoplay controls muted preload loop playsinline>
+            <source src="resources/qual_video.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <br>
+
+
+        <h2 class="title is-5">Novel View Synthesis</h2>
+        <div class="content has-text-justified">
+          <p>
+            To illustrate the quality of our camera pose estimation, we train NeRF models with the extrinsics and intrinsics predicted by our method, with the results shown below.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <video id="novel-view-synthesis" autoplay controls muted preload loop playsinline>
+            <source src="resources/nvs.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <br>
+
+
+
+        <h2 class="title is-5">Camera Pose Uncertainty</h2>
+        <div class="content has-text-justified">
+          <p>
+            One inherent advantage of utilizing the diffusion model for camera pose estimation is its probabilistic nature. 
+            It is well-known that few-view camera pose estimation is a non-deterministic problem, 
+            where multiple pose combinations may be all reasonable for a set of images. 
+            We provide a visualization below to verify that our method can provide several reasonable pose sets \(x\) for the same input frames \(I\).   
+            The cameras predicted for the same frame are indicated with identical colors.
+          </p>
+        </div>
+        <div class="content has-text-centered">
+          <img id="uncertainty" src="resources/pose_uncertainty.png" alt="Uncertainty" style="width: 100%;">
+        </div>        
+        <br>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@InProceedings{wang2023pd,
+  author    = {Jianyuan Wang and Christian Rupprecht and David Novotny},
+  title     = {{PoseDiffusion}: Solving Pose Estimation via Diffusion-aided Bundle Adjustment},
+  journal   = {arXiv preprint},
+  year      = {2023}
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="Acknowledgements">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Acknowledgements</h2>
+    <p>
+      We appreciate the great help from 
+      <a href="https://jasonyzhang.com"> Jason Y. Zhang</a> for generously answering questions and sharing the code for  
+      <a href="https://github.com/jasonyzhang/relpose">RelPose</a> and benchmark evaluation. We would like to thank 
+      <a href="https://github.com/nikitakaraevv">Nikita Karaev</a>, 
+      <a href="https://lukemelas.github.io/">Luke Melas-Kyriazi</a>, 
+      and 
+      <a href="https://elliottwu.com/">Shangzhe Wu </a> 
+      for insightful discussions. 
+    </p>
+    <p>
+      Jianyuan Wang is supported by Facebook Research. Christian Rupprecht is supported by ERC-CoG UNION 101001212 and VisualAI EP/T028572/1.    
+    </p>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This webpage template is adapted from <a
+            href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>, under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0 License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
