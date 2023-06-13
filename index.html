@@ -145,14 +145,16 @@
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <img id="teaser" src="resources/overview.png" alt="Teaser image" style="width: 100%;">
+      <video id="teaser" autoplay controls muted preload loop playsinline height="100%">
+        <source src="resources/splash_sample2.mp4"
+                type="video/mp4">
+      </video>
       <h2 class="subtitle">
-        We propose to formulate the Structure from Motion (SfM) problem inside a probabilistic diffusion framework. Training is supervised given a multi-view datasets of images and camera poses to learn a diffusion model \(D_\theta\) to model \(p(x |I)\). During inference, the reverse diffusion process is guided by optimizing the geometric consistency between poses via Sampson Epipolar Error.
+        Given a set of input frames, the model samples \(p(x |I)\) step by step. We start to use geometry-guided sampling at timestep 10, which corresponds to a notable improvement in prediction quality observed in the video at \(t=10\).
       </h2>
     </div>
   </div>
 </section>
-
 
 
 <section class="section">
@@ -189,26 +191,19 @@
       <div class="column is-full-width has-text-centered">
         <!-- <h2 class="title is-3">Camera Pose Estimation</h2> -->
 
-        <h2 class="title is-5">Visualization of Sampling Iterations</h2>
+
+
+        <h2 class="title is-5">Framework</h2>
         <div class="content has-text-justified">
           <p>
-            <!-- After training, given a set of input frames, the model samples \(p(x |I)\) step by step. We start to use geometry-guided sampling at the timestep of 10, where a jump of prediction quality can be found in the video at t=10. -->
-          After training, given a set of input frames, the model samples \(p(x |I)\) step by step. We employ geometry-guided sampling starting at timestep 10, which corresponds to a notable improvement in prediction quality observed in the video at \(t=10\).
+            We propose to formulate the Structure from Motion (SfM) problem inside a probabilistic diffusion framework. Training is supervised given a multi-view datasets of images and camera poses to learn a diffusion model \(D_\theta\) to model \(p(x |I)\). During inference, the reverse diffusion process is guided by optimizing the geometric consistency between poses via Sampson Epipolar Error.
           </p>
         </div>
         <div class="content has-text-centered">
-          <video id="splash-sample1" autoplay controls muted preload loop playsinline>
-            <source src="resources/splash_sample1.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-        <div class="content has-text-centered">
-          <video id="splash-sample2" autoplay controls muted preload loop playsinline>
-            <source src="resources/splash_sample2.mp4"
-                    type="video/mp4">
-          </video>
+            <img id="teaser" src="resources/overview.png" alt="Teaser image" style="width: 100%;">
         </div>
         <br>
+
 
         <h2 class="title is-5">Qualitative Comparison</h2>
         <div class="content has-text-justified">
@@ -238,6 +233,25 @@
         </div>
         <br>
 
+        <h2 class="title is-5">More Visualization of Sampling Iterations</h2>
+        <!-- <div class="content has-text-justified">
+          <p>
+          After training, given a set of input frames, the model samples \(p(x |I)\) step by step. We employ geometry-guided sampling starting at timestep 10, which corresponds to a notable improvement in prediction quality observed in the video at \(t=10\).
+          </p>
+        </div> -->
+        <!-- <div class="content has-text-centered">
+          <video id="splash-sample1" autoplay controls muted preload loop playsinline>
+            <source src="resources/splash_sample1.mp4"
+                    type="video/mp4">
+          </video>
+        </div> -->
+        <div class="content has-text-centered">
+          <video id="splash-sample2" autoplay controls muted preload loop playsinline>
+            <source src="resources/splash_sample2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <br>
 
         <h2 class="title is-5">Novel View Synthesis</h2>
         <div class="content has-text-justified">
